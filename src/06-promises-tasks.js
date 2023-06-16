@@ -28,8 +28,21 @@
  *      .catch((error) => console.log(error.message)) // 'Error: Wrong parameter is passed!
  *                                                    //  Ask her again.';
  */
-function willYouMarryMe(/* isPositiveAnswer */) {
-  throw new Error('Not implemented');
+function willYouMarryMe(isPositiveAnswer) {
+  return new Promise((resolve, reject) => {
+    const answer = isPositiveAnswer;
+    let value = 'Oh no, she said "No".';
+    if (answer === true) {
+      value = 'Hooray!!! She said "Yes"!';
+      resolve(value);
+    }
+    if (answer === false) {
+      resolve(value);
+    }
+    if (typeof answer !== 'boolean') {
+      reject(Error('Wrong parameter is passed! Ask her again.'));
+    }
+  });
 }
 
 
@@ -48,8 +61,16 @@ function willYouMarryMe(/* isPositiveAnswer */) {
  *    })
  *
  */
-function processAllPromises(/* array */) {
-  throw new Error('Not implemented');
+function processAllPromises(array) {
+  const result = [];
+  return new Promise((resolve, reject) => {
+    array.forEach((promise) => {
+      promise
+        .then((resultUn) => result.push(resultUn))
+        .catch((error) => reject(new Error(error)));
+    });
+    return resolve(result);
+  });
 }
 
 /**
@@ -71,8 +92,11 @@ function processAllPromises(/* array */) {
  *    })
  *
  */
-function getFastestPromise(/* array */) {
-  throw new Error('Not implemented');
+function getFastestPromise(array) {
+  return Promise.race(array).then((value) => new Promise((resolve, reject) => {
+    resolve(value);
+    reject(Error('Error was given from the first rejected Promise in array!'));
+  }));
 }
 
 /**
@@ -92,8 +116,15 @@ function getFastestPromise(/* array */) {
  *    });
  *
  */
-function chainPromises(/* array, action */) {
-  throw new Error('Not implemented');
+async function chainPromises(array, action) {
+  const resolves = [];
+  await array.forEach((promise) => Promise.resolve(promise).then((value) => {
+    resolves.push(value);
+  }).catch());
+  return new Promise((resolve, reject) => {
+    resolve(resolves.reduce(action));
+    reject(Error());
+  });
 }
 
 module.exports = {
