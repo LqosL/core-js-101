@@ -197,7 +197,7 @@ describe('07-promises-tasks', () => {
 
     const unhandled = new Promise((resolve, reject) => {
       process.on('unhandledRejection', (err) => {
-//        global.console.error(err);
+        global.console.error(err);
         reject(Error('there are should not be any Unhandled Rejections!'));
       });
       result2 = tasks.chainPromises(arrayForPromise.map((item) => (item % 2
